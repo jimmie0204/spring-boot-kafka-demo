@@ -11,6 +11,10 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
+import org.springframework.util.concurrent.ListenableFuture;
+
+import java.util.concurrent.ExecutionException;
 
 /**
  *
@@ -24,7 +28,8 @@ public class S1pKafkaApplication {
 			.web(WebApplicationType.NONE)
 			.run(args);
 		TestBean testBean = context.getBean(TestBean.class);
-		testBean.send("foo");
+		testBean.send("fookafka");
+		System.out.println("done=====");
 	}
 
 	@Bean
@@ -41,7 +46,17 @@ public class S1pKafkaApplication {
 		private KafkaTemplate<String, String> template;
 
 		public void send(String foo) {
-			this.template.send(this.configProperties.getTopic(), foo);
+			ListenableFuture<SendResult<String, String>> send = this.template.send(this.configProperties.getTopic(), foo);
+			String topic = null;
+			try {
+				topic = send.get().getRecordMetadata().topic();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			} catch (ExecutionException e) {
+				e.printStackTrace();
+			}
+			System.out.println(topic);
+
 		}
 
 	}

@@ -16,12 +16,8 @@
 
 package com.springkafka.app2;
 
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-
 import com.springkafka.CommonConfiguration;
 import com.springkafka.ConfigProperties;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.WebApplicationType;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -32,6 +28,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.core.KafkaTemplate;
+
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Gary Russell
@@ -46,8 +45,8 @@ public class S1pKafkaApplication {
 		ConfigurableApplicationContext context = new SpringApplicationBuilder(S1pKafkaApplication.class)
 			.web(WebApplicationType.NONE)
 			.run(args);
-		TestBean testBean = context.getBean(TestBean.class);
-		testBean.send("foo");
+//		TestBean testBean = context.getBean(TestBean.class);
+//		testBean.send("foo");
 		context.getBean(Listener.class).latch.await(60, TimeUnit.SECONDS);
 		context.close();
 	}
